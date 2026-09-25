@@ -1,0 +1,23 @@
+{
+  "name": "saucedemo-ui-automation",
+  "version": "1.0.0",
+  "private": true,
+  "description": "SauceDemo UI automation with Selenium, Mocha and Page Object Model",
+  "type": "commonjs",
+  "scripts": {
+    "test": "mocha \"tests/**/*.test.js\" --reporter spec --timeout 60000",
+    "test:login": "mocha \"tests/login/**/*.test.js\" --reporter spec --timeout 60000",
+    "test:products": "mocha \"tests/products/**/*.test.js\" --reporter spec --timeout 60000"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "dependencies": {
+    "dotenv": "18.0.3",
+    "selenium-webdriver": "4.49.0"
+  },
+  "devDependencies": {
+    "chai": "4.5.0",
+    "mocha": "12.0.2"
+  }
+}
