@@ -1,17 +1,10 @@
 const { expect } = require('chai');
 const urlList = require('../../utils/urlList');
+const errorMessages = require('../../utils/errorMessages');
 const { standardUser, lockedUser, invalidUsernameUser, invalidPasswordUser } = require('../../data/users');
 const BaseTest = require('../BaseTest');
 const LoginPage = require('../../pages/LoginPage');
 const ProductsPage = require('../../pages/ProductsPage');
-
-// Canlı uygulamanın login hata bileşenindeki tam metinler (Epic sadface öneki dahil).
-const errorMessages = Object.freeze({
-  invalidCredentials: 'Epic sadface: Username and password do not match any user in this service',
-  usernameRequired: 'Epic sadface: Username is required',
-  passwordRequired: 'Epic sadface: Password is required',
-  lockedUser: 'Epic sadface: Sorry, this user has been locked out.',
-});
 
 describe('SauceDemo - Login', function () {
   const test = new BaseTest();
@@ -74,13 +67,11 @@ describe('SauceDemo - Login', function () {
     await expectLoginRejected(errorMessages.lockedUser);
   });
 
-  //kullanıcı adı ve parola alanlarının boş bırakılması durumunda önce kullanıcı adı zorunluluğu
   it('LOGIN-008: should show username required error when both fields are empty', async function () {
     await test.loginPage.login({ ...standardUser, username: '', password: '' });
     await expectLoginRejected(errorMessages.usernameRequired);
   });
 
-  //hatalı girişten sonra doğru giriş yapılabilmesi
   it('LOGIN-009: should allow login after a failed attempt', async function () {
     await test.loginPage.login(invalidPasswordUser);
     await expectLoginRejected(errorMessages.invalidCredentials);
