@@ -8,6 +8,7 @@ const locators = Object.freeze({
   cartItem: By.css('[data-test="inventory-item"]'),
   productName: By.css('[data-test="inventory-item-name"]'),
   productPrice: By.css('[data-test="inventory-item-price"]'),
+  checkoutButton: By.id('checkout'),
   removeButton(productId) {
     return By.id(`remove-${productId}`);
   },
@@ -39,6 +40,10 @@ class CartPage extends BasePage {
       async () => (await this.driver.findElements(locators.removeButton(productId))).length === 0,
       config.timeouts.explicit,
     );
+  }
+
+  async startCheckout() {
+    await this.click(locators.checkoutButton);
   }
 }
 
