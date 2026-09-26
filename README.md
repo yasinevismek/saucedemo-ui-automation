@@ -84,9 +84,9 @@ npm run test:report
 | --- | ---: |
 | Login | 9 |
 | Products | 9 |
-| Cart | 7 |
+| Cart | 6 |
 | Checkout | 10 |
-| Toplam | 35 |
+| Toplam | 34 |
 
 Login, ürün listeleme ve sıralama, sepet işlemleri, checkout akışı, toplam hesaplama ve zorunlu alan kontrolleri test edildi.
 
