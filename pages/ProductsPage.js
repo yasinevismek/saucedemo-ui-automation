@@ -67,6 +67,11 @@ class ProductsPage extends BasePage {
     return prices;
   }
 
+  async getProductPriceValues() {
+    const prices = await this.getProductPrices();
+    return prices.map((price) => Number.parseFloat(price.replace(/[^0-9.]/g, '')));
+  }
+
   async getBackpackName() {
     const backpackItem = await this.waitForVisible(locators.backpackTitleLink);
     const name = await backpackItem.getText();

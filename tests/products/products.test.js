@@ -78,4 +78,19 @@ describe('SauceDemo - Products', function () {
         const sortedNames = [...actualNames].sort((a, b) => b.localeCompare(a));
         expect(actualNames, 'Products should be sorted by name from Z to A').to.deep.equal(sortedNames);
     });
+
+    it('PRODUCT-008: should sort products by price from low to high', async function () {
+        await test.productsPage.sortProducts('lohi');
+        const actualPrices = await test.productsPage.getProductPriceValues();
+        const sortedPrices = [...actualPrices].sort((a, b) => a - b);
+        expect(actualPrices, 'Products should be sorted by price from low to high').to.deep.equal(sortedPrices);
+    });
+
+    it('PRODUCT-009: should sort products by price from high to low', async function () {
+        await test.productsPage.sortProducts('lohi');
+        await test.productsPage.sortProducts('hilo');
+        const actualPrices = await test.productsPage.getProductPriceValues();
+        const sortedPrices = [...actualPrices].sort((a, b) => b - a);
+        expect(actualPrices, 'Products should be sorted by price from high to low').to.deep.equal(sortedPrices);
+    });
 });
