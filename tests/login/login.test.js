@@ -21,58 +21,58 @@ describe('SauceDemo - Login', function () {
     expect(await test.loginPage.getCurrentUrl(), 'Rejected login must not reach inventory').to.equal(urlList.loginPageUrl);
   }
 
-  it('LOGIN-001: should login successfully with valid credentials', async function () {
+  it('LOGIN-001: Geçerli kullanıcı bilgileri ile başarılı login', async function () {
     await test.loginPage.loginAs(standardUser);
-    expect(await test.productsPage.isLoaded(), 'Products page should load').to.equal(true);
+    expect(await test.productsPage.isLoaded(), errorMessages.productPageNotLoaded).to.equal(true);
 
-    expect(await test.productsPage.getCurrentUrl(), 'Inventory URL').to.equal(
+    expect(await test.productsPage.getCurrentUrl(), errorMessages.urlNotMatch).to.equal(
       urlList.productsPageUrl,
     );
-    expect(await test.productsPage.getProductsTitle(), 'Products page title').to.equal('Products');
-    expect(await test.productsPage.isInventoryVisible(), 'Inventory list should be visible').to.equal(true);
+    expect(await test.productsPage.getProductsTitle(), errorMessages.textNotMatch).to.equal('Products');
+    expect(await test.productsPage.isInventoryVisible(), errorMessages.elementNotVisible).to.equal(true);
   });
 
-  it('LOGIN-002: should redirect to inventory page after successful login', async function () {
+  it('LOGIN-002: Login sonrasında doğru sayfaya yönlendirildiğinin doğrulanması', async function () {
     await test.loginPage.login(standardUser);
     await test.productsPage.waitForLoaded();
 
     const currentUrl = new URL(await test.productsPage.getCurrentUrl());
-    expect(currentUrl.origin, 'Redirect should stay on the configured site').to.equal(new URL(urlList.productsPageUrl).origin);
-    expect(currentUrl.pathname, 'Inventory path').to.equal(new URL(urlList.productsPageUrl).pathname);
-    expect(await test.productsPage.getProductsTitle(), 'Destination page title').to.equal('Products');
+    expect(currentUrl.origin, errorMessages.urlNotMatch).to.equal(new URL(urlList.productsPageUrl).origin);
+    expect(currentUrl.pathname, errorMessages.urlNotMatch).to.equal(new URL(urlList.productsPageUrl).pathname);
+    expect(await test.productsPage.getProductsTitle(), errorMessages.textNotMatch).to.equal('Products');
   });
 
-  it('LOGIN-003: should show an error for invalid username', async function () {
+  it('LOGIN-003: Hatalı kullanıcı adı', async function () {
     await test.loginPage.login(invalidUsernameUser);
     await expectLoginRejected(errorMessages.invalidCredentials);
   });
 
-  it('LOGIN-004: should show an error for invalid password', async function () {
+  it('LOGIN-004: Hatalı password', async function () {
     await test.loginPage.login(invalidPasswordUser);
     await expectLoginRejected(errorMessages.invalidCredentials);
   });
 
-  it('LOGIN-005: should show username required error when username is empty', async function () {
+  it('LOGIN-005: Boş kullanıcı adı', async function () {
     await test.loginPage.login({ ...standardUser, username: '' });
     await expectLoginRejected(errorMessages.usernameRequired);
   });
 
-  it('LOGIN-006: should show password required error when password is empty', async function () {
+  it('LOGIN-006: Boş password', async function () {
     await test.loginPage.login({ ...standardUser, password: '' });
     await expectLoginRejected(errorMessages.passwordRequired);
   });
 
-  it('LOGIN-007: should prevent login for locked out user', async function () {
+  it('LOGIN-007: Locked user ile login', async function () {
     await test.loginPage.login(lockedUser);
     await expectLoginRejected(errorMessages.lockedUser);
   });
 
-  it('LOGIN-008: should show username required error when both fields are empty', async function () {
+  it('LOGIN-008: Kullanıcı adı ve parola boş bırakıldığında hata mesajı gösterilmesi', async function () {
     await test.loginPage.login({ ...standardUser, username: '', password: '' });
     await expectLoginRejected(errorMessages.usernameRequired);
   });
 
-  it('LOGIN-009: should allow login after a failed attempt', async function () {
+  it('LOGIN-009: Başarılı bir giriş sonrasında tekrar giriş yapılabilmesi', async function () {
     await test.loginPage.login(invalidPasswordUser);
     await expectLoginRejected(errorMessages.invalidCredentials);
 
@@ -80,8 +80,8 @@ describe('SauceDemo - Login', function () {
     await test.productsPage.waitForLoaded();
 
     const currentUrl = new URL(await test.productsPage.getCurrentUrl());
-    expect(currentUrl.origin, 'Redirect should stay on the configured site').to.equal(new URL(urlList.productsPageUrl).origin);
-    expect(currentUrl.pathname, 'Inventory path').to.equal(new URL(urlList.productsPageUrl).pathname);
-    expect(await test.productsPage.getProductsTitle(), 'Destination page title').to.equal('Products');
+    expect(currentUrl.origin, errorMessages.urlNotMatch).to.equal(new URL(urlList.productsPageUrl).origin);
+    expect(currentUrl.pathname, errorMessages.urlNotMatch).to.equal(new URL(urlList.productsPageUrl).pathname);
+    expect(await test.productsPage.getProductsTitle(), errorMessages.textNotMatch).to.equal('Products');
   });
 });

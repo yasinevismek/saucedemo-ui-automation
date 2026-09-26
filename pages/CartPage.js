@@ -8,6 +8,8 @@ const locators = Object.freeze({
   cartItem: By.css('[data-test="inventory-item"]'),
   productName: By.css('[data-test="inventory-item-name"]'),
   productPrice: By.css('[data-test="inventory-item-price"]'),
+  cartBadge: By.css('[data-test="shopping-cart-badge"]'),
+  cartLink: By.css('[data-test="shopping-cart-link"]'),
   checkoutButton: By.id('checkout'),
   removeButton(productId) {
     return By.id(`remove-${productId}`);
@@ -15,6 +17,24 @@ const locators = Object.freeze({
 });
 
 class CartPage extends BasePage {
+  async openCart() {
+    await this.click(locators.cartLink);
+  }
+
+  async waitForItemCount(expectedCount) {
+    await this.driver.wait(async () => {
+      const badges = await this.driver.findElements(locators.cartBadge);
+      if (expectedCount === 0) {
+        return badges.length === 0;
+      }
+      if (badges.length === 0) {
+        return false;
+      }
+      return Number.parseInt(await badges[0].getText(), 10) === expectedCount;
+    }, config.timeouts.explicit);
+    return expectedCount;
+  }
+
   async waitForLoaded() {
     await this.driver.wait(until.urlIs(urlList.cartPageUrl), config.timeouts.explicit);
     await this.waitForVisible(locators.cartList);

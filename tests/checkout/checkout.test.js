@@ -4,7 +4,6 @@ const { backpack, bikeLight } = require('../../data/products');
 const { validCustomer } = require('../../data/checkout');
 const errorMessages = require('../../utils/errorMessages');
 const BaseTest = require('../BaseTest');
-const CartHeader = require('../../components/CartHeader');
 const LoginPage = require('../../pages/LoginPage');
 const ProductsPage = require('../../pages/ProductsPage');
 const CartPage = require('../../pages/CartPage');
@@ -18,7 +17,6 @@ describe('SauceDemo - Checkout', function () {
   test.registerHooks(async function () {
     test.loginPage = new LoginPage(test.driver);
     test.productsPage = new ProductsPage(test.driver);
-    test.cartHeader = new CartHeader(test.driver);
     test.cartPage = new CartPage(test.driver);
     test.checkoutStepOnePage = new CheckoutStepOnePage(test.driver);
     test.checkoutStepTwoPage = new CheckoutStepTwoPage(test.driver);
@@ -31,8 +29,8 @@ describe('SauceDemo - Checkout', function () {
     for (const product of selectedProducts) {
       await test.productsPage.addProductToCart(product.id);
     }
-    await test.cartHeader.waitForItemCount(selectedProducts.length);
-    await test.cartHeader.openCart();
+    await test.cartPage.waitForItemCount(selectedProducts.length);
+    await test.cartPage.openCart();
     await test.cartPage.waitForLoaded();
     await test.cartPage.startCheckout();
     await test.checkoutStepOnePage.waitForLoaded();
@@ -44,92 +42,88 @@ describe('SauceDemo - Checkout', function () {
     await test.checkoutStepTwoPage.waitForLoaded();
   }
 
-  it('CHECKOUT-001: should start checkout with products in the cart', async function () {
+  it('CHECKOUT-001: Sepetteki ürünlerle checkout başlatılması', async function () {
     await startCheckoutWithProducts();
 
-    expect(await test.checkoutStepOnePage.getCurrentUrl(), 'Checkout information URL')
-      .to.equal(urlList.checkoutStepOnePageUrl);
+    expect(await test.checkoutStepOnePage.getCurrentUrl(), errorMessages.urlNotMatch).to.equal(urlList.checkoutStepOnePageUrl);
   });
 
-  it('CHECKOUT-002: should continue checkout with valid customer information', async function () {
+  it('CHECKOUT-002: Geçerli customer bilgileri girilmesi', async function () {
     await openCheckoutOverview();
 
-    expect(await test.checkoutStepTwoPage.getCurrentUrl(), 'Checkout overview URL')
-      .to.equal(urlList.checkoutStepTwoPageUrl);
+    expect(await test.checkoutStepTwoPage.getCurrentUrl(), errorMessages.urlNotMatch).to.equal(urlList.checkoutStepTwoPageUrl);
   });
 
-  it('CHECKOUT-003: should show the selected product in the checkout overview', async function () {
+  it('CHECKOUT-003: Checkout summary bilgilerinin doğrulanması', async function () {
     await openCheckoutOverview();
 
-    expect(await test.checkoutStepTwoPage.getOrderItems(), 'Checkout overview should contain the selected product')
-      .to.deep.include({ name: backpack.name, price: backpack.price });
+    expect(await test.checkoutStepTwoPage.getOrderItems(), errorMessages.orderItemsNotMatch).to.deep.include({ name: backpack.name, price: backpack.price });
   });
 
-  it('CHECKOUT-004: should calculate the checkout total correctly', async function () {
+  it('CHECKOUT-004: ürün fiyatlarının ve toplam tutarın doğrulanması', async function () {
     await openCheckoutOverview();
 
     const { itemTotal, tax, total } = await test.checkoutStepTwoPage.getOrderTotals();
-    expect(itemTotal, 'Item total should equal the selected product price')
-      .to.equal(Number.parseFloat(backpack.price.slice(1)));
-    expect(tax, 'Tax should be applied to the order').to.be.greaterThan(0);
-    expect(total, 'Total should equal item total plus tax').to.equal(Number((itemTotal + tax).toFixed(2)));
+    expect(itemTotal, errorMessages.textNotMatch).to.equal(Number.parseFloat(backpack.price.slice(1)));
+    expect(tax, errorMessages.textNotMatch).to.be.greaterThan(0);
+    expect(total, errorMessages.textNotMatch).to.equal(Number((itemTotal + tax).toFixed(2)));
   });
 
-  it('CHECKOUT-005: should complete the checkout and show a success message', async function () {
+  it('CHECKOUT-005: Siparişin tamamlanması ve başarılı sipariş mesajının doğrulanması', async function () {
     await openCheckoutOverview();
     await test.checkoutStepTwoPage.finishCheckout();
     await test.checkoutCompletePage.waitForLoaded();
 
-    expect(await test.checkoutCompletePage.getConfirmationMessage(), 'Order confirmation message')
+    expect(await test.checkoutCompletePage.getConfirmationMessage(), errorMessages.textNotMatch)
       .to.equal('Thank you for your order!');
   });
 
-  it('CHECKOUT-006: should show an error when first name is empty', async function () {
+  it('CHECKOUT-006: Zorunlu alanların boş bırakılması First Name', async function () {
     await startCheckoutWithProducts();
     await test.checkoutStepOnePage.submitCustomerInformation({ ...validCustomer, firstName: '' });
 
-    expect(await test.checkoutStepOnePage.getErrorMessage(), 'First name validation message')
+    expect(await test.checkoutStepOnePage.getErrorMessage(), errorMessages.textNotMatch)
       .to.equal(errorMessages.checkoutFirstNameRequired);
-    expect(await test.checkoutStepOnePage.getCurrentUrl(), 'Checkout information URL')
+    expect(await test.checkoutStepOnePage.getCurrentUrl(), errorMessages.urlNotMatch)
       .to.equal(urlList.checkoutStepOnePageUrl);
   });
 
-  it('CHECKOUT-007: should show an error when last name is empty', async function () {
+  it('CHECKOUT-007: Zorunlu alanların boş bırakılması Last Name', async function () {
     await startCheckoutWithProducts();
     await test.checkoutStepOnePage.submitCustomerInformation({ ...validCustomer, lastName: '' });
 
-    expect(await test.checkoutStepOnePage.getErrorMessage(), 'Last name validation message')
+    expect(await test.checkoutStepOnePage.getErrorMessage(), errorMessages.textNotMatch)
       .to.equal(errorMessages.checkoutLastNameRequired);
-    expect(await test.checkoutStepOnePage.getCurrentUrl(), 'Checkout information URL')
+    expect(await test.checkoutStepOnePage.getCurrentUrl(), errorMessages.urlNotMatch)
       .to.equal(urlList.checkoutStepOnePageUrl);
   });
 
-  it('CHECKOUT-008: should show an error when postal code is empty', async function () {
+  it('CHECKOUT-008: Zorunlu alanların boş bırakılması Postal Code', async function () {
     await startCheckoutWithProducts();
     await test.checkoutStepOnePage.submitCustomerInformation({ ...validCustomer, postalCode: '' });
 
-    expect(await test.checkoutStepOnePage.getErrorMessage(), 'Postal code validation message')
+    expect(await test.checkoutStepOnePage.getErrorMessage(), errorMessages.textNotMatch)
       .to.equal(errorMessages.checkoutPostalCodeRequired);
-    expect(await test.checkoutStepOnePage.getCurrentUrl(), 'Checkout information URL')
+    expect(await test.checkoutStepOnePage.getCurrentUrl(), errorMessages.urlNotMatch)
       .to.equal(urlList.checkoutStepOnePageUrl);
   });
 
-  it('CHECKOUT-009: should return to the cart when checkout is cancelled', async function () {
+  it('CHECKOUT-009: Checkout iptal edildiğinde sepetin görüntülenmesi', async function () {
     await startCheckoutWithProducts();
     await test.checkoutStepOnePage.cancel();
     await test.cartPage.waitForLoaded();
 
-    expect(await test.cartPage.getCartItems(), 'Cart should retain its product after cancelling checkout')
+    expect(await test.cartPage.getCartItems(), errorMessages.textNotMatch)
       .to.deep.include({ name: backpack.name, price: backpack.price });
   });
 
-  it('CHECKOUT-010: should show all selected products in the checkout overview', async function () {
+  it('CHECKOUT-010: Checkout overview sayfasının doğru görüntülenmesi', async function () {
     await openCheckoutOverview([backpack, bikeLight]);
 
     const orderItems = await test.checkoutStepTwoPage.getOrderItems();
-    expect(orderItems, 'Checkout overview should contain Backpack')
+    expect(orderItems, errorMessages.textNotMatch)
       .to.deep.include({ name: backpack.name, price: backpack.price });
-    expect(orderItems, 'Checkout overview should contain Bike Light')
+    expect(orderItems, errorMessages.textNotMatch)
       .to.deep.include({ name: bikeLight.name, price: bikeLight.price });
   });
 });

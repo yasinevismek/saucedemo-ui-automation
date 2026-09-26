@@ -6,4 +6,10 @@ module.exports = Object.freeze({
   checkoutFirstNameRequired: 'Error: First Name is required',
   checkoutLastNameRequired: 'Error: Last Name is required',
   checkoutPostalCodeRequired: 'Error: Postal Code is required',
+  productPageNotLoaded: 'Product page did not load successfully',
+  urlNotMatch: 'Current URL does not match the expected URL',
+  textNotMatch: 'Text does not match the expected value',
+  elementNotVisible: 'Expected element is not visible on the page',
+  elementVisible: 'Expected element is visible on the page',
+  orderItemsNotMatch: 'Order items do not match the expected items',
 });
