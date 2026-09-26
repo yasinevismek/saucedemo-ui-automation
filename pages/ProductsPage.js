@@ -11,6 +11,9 @@ const locators = Object.freeze({
   productPrice: By.css('[data-test="inventory-item-price"]'),
   backpackTitleLink: By.id('item_4_title_link'),
   sortDropdown: By.css('[data-test="product-sort-container"]'),
+  addToCartButton(productId) {
+    return By.id(`add-to-cart-${productId}`);
+  },
 });
 
 class ProductsPage extends BasePage {
@@ -80,6 +83,10 @@ class ProductsPage extends BasePage {
 
   async openBackpackDetails() {
     await this.click(locators.backpackTitleLink);
+  }
+
+  async addProductToCart(productId) {
+    await this.click(locators.addToCartButton(productId));
   }
 
   async sortProducts(sortValue){
