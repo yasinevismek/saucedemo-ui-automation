@@ -10,6 +10,18 @@ Bu proje SauceDemo uygulaması için hazırlanan UI test otomasyon projesidir. S
 - Mocha / Chai
 - Google Chrome
 
+## Gereksinimler
+
+- Node.js `22.12.0` veya üzeri
+- npm
+
+Node.js yüklü değilse [Node.js indirme sayfasından](https://nodejs.org/en/download) kurulabilir. Kurulumdan sonra sürümleri kontrol edebilirsiniz:
+
+```bash
+node --version
+npm --version
+```
+
 ## Kurulum
 
 Projeyi indirdikten sonra aşağıdaki komutları çalıştırmak yeterli:
@@ -36,7 +48,7 @@ BASE_URL=https://www.saucedemo.com/
 ACTION_DELAY_MS=300
 ```
 
-`ACTION_DELAY_MS` tarayıcıdaki adımları daha rahat görmek için var. Testler hızlı çalıştırmak istenirse `0` yapılabilir.
+`ACTION_DELAY_MS` tarayıcıdaki adımları daha rahat görmek için var. Testler hızlı çalıştırmak istenirse bu değer değiştirilebilir.
 
 ## Testleri Çalıştırma
 
@@ -82,7 +94,7 @@ Login, ürün listeleme ve sıralama, sepet işlemleri, checkout akışı, topla
 
 Öncelikle kullanıcının satın alma yolculuğuna odaklanıldı login, ürün listeleme, cart ve checkout. Bu alanlar uygulamanın temel iş akışını oluşturduğu için hem pozitif hem de negatif senaryolarla test edildi. Ürünlerde liste, detay, dönüş ve tüm sıralama seçenekleri; cart'ta ekleme, silme ve boş sepet; checkout'ta form doğrulamaları, tutar hesabı ve sipariş tamamlama yer alıyor.
 
-High-risk olarak login, cart badge sayısı, ürün bilgilerinin checkout'a aktarılması ve toplam tutar hesaplaması değerlendirildi. Bu alanlardaki bir hata kullanıcının alışverişi tamamlayamamasına veya yanlış tutar görmesine neden olabilir.
+High-risk olarak login, ürün bilgilerinin checkout'a aktarılması ve toplam tutar hesaplaması değerlendirildi. Bu alanlardaki bir hata kullanıcının alışverişi tamamlayamamasına veya yanlış tutar görmesine neden olabilir.
 
 Bu çalışmada hamburger menü, logout, sosyal medya linkleri, responsive görünüm ve her ürünün tüm detay alanları otomatikleştirilmedi. Öncelik, ödev kapsamındaki kritik satın alma akışını tamamlamaktı.
 
@@ -110,10 +122,19 @@ Günlük çalıştırmalarda Mocha'nın `spec` reporter'ı kullanılıyor. Test 
 ## Klasör Yapısı
 
 ```text
-components/     # Ortak UI parçaları
-config/         # Ortam ve timeout ayarları
-data/           # Test verileri
-pages/          # Page Object sınıfları
-tests/          # Login, products, cart ve checkout testleri
-utils/          # Driver, URL ve hata mesajı yardımcıları
+project/
+├── config/                 # Ortam ve timeout ayarları
+├── data/                   # Kullanıcı, ürün ve checkout test verileri
+├── pages/                  # Page Object sınıfları
+├── reports/                # HTML/JSON raporlar ve failure screenshot'ları
+├── tests/
+│   ├── login/
+│   ├── products/
+│   ├── cart/
+│   └── checkout/
+├── utils/                  # Driver, URL ve hata mesajı yardımcıları
+├── .env.example
+├── package.json
+├── package-lock.json
+└── README.md
 ```
